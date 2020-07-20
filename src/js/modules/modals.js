@@ -1,6 +1,13 @@
 const modals = () => {
-    function bindModal(trigger,modal,close){  // привязка модального окна к определённому тригеру(селектору)
-            trigger.addEventListener('click',(event)=>{
+    function bindModal(triggerSelector,modalSelector,closeSelector){  // привязка модального окна к определённому тригеру(селектору)
+         
+        
+        const trigger = document.querySelectorAll(triggerSelector), // селектор кнопки
+                modal = document.querySelector(modalSelector), // модальное окно с формой
+                close = document.querySelector(closeSelector); // кнопка "крестик" для закрытия окна
+
+        trigger.forEach(item => {
+            item.addEventListener('click',(event)=>{
                 if(event.target){ // отменяем стандартное поведение браузера
                     event.preventDefault();
                 }
@@ -8,18 +15,33 @@ const modals = () => {
                 document.body.style.overflow = 'hidden'; // прокрутка документа не возможна
 
             });
+        })
 
             close.addEventListener('click', ()=>{
                 modal.style.display = 'none';  // модальное окно становится невидимым 
                 document.body.style.overflow = '';
             })
+
+            modal.addEventListener('click',(event) => { // клик по пустой области закрывает мод.окно
+                
+                if(event.target === modal){
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            })
     }
 
-    const callEngineerBtn = document.querySelector('.popup_engineer_btn'), // селектор кнопки
-        modalEngineer = document.querySelector('.popup_engineer'), // модальное окно с формой
-        modalEngineerClose = document.querySelector('.popup_engineer .popup_close') // кнопка "крестик" для закрытия окна
+    function showModalByTyme(selector,time){
+        setTimeout(()=>{
+            document.querySelector(selector).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        },time)
+    }
 
-    bindModal(callEngineerBtn, modalEngineer, modalEngineerClose);
+    bindModal('.popup_engineer_btn', '.popup_engineer', '.popup_engineer .popup_close');
+    bindModal('.phone_link','.popup', '.popup .popup_close');
+
+    showModalByTyme('.popup',60000);
 }
 
 export default modals;
